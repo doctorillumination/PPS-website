@@ -17,7 +17,7 @@ The temporary order workflow sends a prepared order request to the nonprofit by 
 
 ## Local development
 
-This project requires Node.js 22.13 or newer.
+This project uses Node.js 24.22.1, selected by `.nvmrc`.
 
 ```bash
 npm install
@@ -40,10 +40,14 @@ The test command creates the Cloudflare-compatible production build and verifies
 2. From this folder, add that repository as the Git remote, commit the files, and push the default branch.
 3. In Cloudflare, create a Workers or Pages project from the GitHub repository.
 4. Use `npm run build` as the build command.
-5. Keep the project on Node.js 22.13 or newer.
+5. Use the Node.js version selected by `.nvmrc`.
 6. Attach `psychedelicpuppet.show` as the custom domain after a preview deployment has been reviewed.
 
 The bundled Vinext configuration produces Cloudflare Worker-compatible output. No database or object storage is required for the current site.
+
+Unused Drizzle dependencies, empty schema and migration files, and the starter
+D1 example have been removed. If a future feature needs persistent records,
+design its schema and migration workflow before adding current database tools.
 
 ## Before changing DNS
 
