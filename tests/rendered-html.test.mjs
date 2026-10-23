@@ -1,25 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-async function render(path = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
-  const { default: worker } = await import(workerUrl.href);
+import { after, before } from "node:test";
+import { createTestHarness } from "wrangler";
 
-  return worker.fetch(
-    new Request(`http://localhost${path}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+const server = createTestHarness({ workers: [{ configPath: "dist/server/wrangler.json" }] });
+before(() => server.listen());
+after(() => server.close());
+
+async function render(path = "/") {
+  return server.fetch(path, { headers: { accept: "text/html" } });
 }
 
 test("server-renders the Psychedelic Puppet Show homepage", async () => {
